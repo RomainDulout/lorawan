@@ -13,7 +13,7 @@
 
 #include "class-a-end-device-lorawan-mac.h"
 #include "end-device-lora-phy.h"
-
+#include "ns3/energy-module.h"
 #include "ns3/energy-source-container.h"
 #include "ns3/log.h"
 #include "ns3/simulator.h"
@@ -86,7 +86,7 @@ EndDeviceLorawanMac::GetTypeId()
             .AddAttribute("MType",
                           "Specify type of message will be sent by this end device.",
                           EnumValue(LorawanMacHeader::UNCONFIRMED_DATA_UP),
-                          MakeEnumAccessor<LorawanMacHeader::MType>(&EndDeviceLorawanMac::m_mType),
+                          MakeEnumAccessor(&EndDeviceLorawanMac::m_mType),
                           MakeEnumChecker(LorawanMacHeader::UNCONFIRMED_DATA_UP,
                                           "Unconfirmed",
                                           LorawanMacHeader::CONFIRMED_DATA_UP,
@@ -859,7 +859,7 @@ EndDeviceLorawanMac::OnDevStatusReq()
     uint8_t battery = 255; // could not measure
     if (m_device && m_device->GetNode())
     {
-        if (auto sc = m_device->GetNode()->GetObject<energy::EnergySourceContainer>();
+        if (auto sc = m_device->GetNode()->GetObject<EnergySourceContainer>();
             sc && sc->GetN() == 1)
         {
             battery = sc->Get(0)->GetEnergyFraction() * 253 + 1.5; // range 1-254
